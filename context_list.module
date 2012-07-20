@@ -1,0 +1,107 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function context_list_menu() {
+	$items = array();
+  $items['admin/structure/context/contexts_list'] = array(
+    'title' => 'Contexts',
+    'type' => MENU_LOCAL_ACTION,
+    'page callback' => 'context_list_contexts',
+    'access arguments' => array('access administration pages'),
+    'weight' => 10
+  );
+  return $items;
+}
+
+function context_list_contexts() {
+  $page = array();
+
+  $page['intro'] = array(
+    '#markup' => '<p>Below is a list of each context and their related settings.</p>',
+  );
+
+  $rows = array();
+  $header = array('Context', 'Conditions', 'Reactions');
+
+  $contexts = context_context_list();
+  sort($contexts);
+  foreach ($contexts as $context_name) {
+    $context = context_load($context_name);
+    array_push(
+      $rows, 
+      array(
+        l($context_name, 'admin/structure/context/list/' . $context_name .'/edit') . '<div class="description">'. $context->description .'</div>',
+        context_list_conditions($context->conditions),
+        context_list_reactions($context->reactions)
+      )
+    );
+  }
+
+
+  $page['table'] = array(
+    '#theme' => 'table',
+    '#rows' => $rows,
+    '#header' => $header,
+    '#empty' => t('There are no contexts'),
+  );
+
+  return $page;
+}
+
+function context_list_conditions($conditions) {
+  module_load_include('inc', 'context_list', 'context_list.plugins');
+
+  $condition_description = array();
+
+  foreach ($conditions as $condition => $settings) {
+    $display_class = 'ContextListConditionDisplay';
+
+    if (class_exists('ContextListConditionDisplay_' . $condition)) {
+      $display_class = 'ContextListConditionDisplay_' . $condition;
+    }
+
+    $display = new $display_class;
+    $display->condition = $condition;
+    $display->settings = $settings;
+
+    array_push($condition_description, $display->display());
+  }
+
+  return implode(", ", $condition_description);
+}
+
+function context_list_reactions($reactions) {
+  $reaction_description = array();
+
+  if (count($reactions) == 0) {
+    return t('No reactions');
+  }
+
+  foreach ($reactions as $reaction => $settings) {
+
+    $reaction_details = array();
+
+    if ($reaction == 'block') {
+      foreach ($settings['blocks'] as $block => $details) {
+        array_push(
+          $reaction_details, 
+          l($block, 'admin/structure/block/manage/' . $details['module'] . '/' . $details['delta'] . '/configure')
+        );
+      }
+      $list = array(
+        '#theme' => 'item_list',
+        '#items' => $reaction_details,
+      );
+      $rendered_list = '<p>Blocks:</p>' . drupal_render($list);
+      array_push($reaction_description, $rendered_list);
+    }
+    else {
+      array_push($reaction_description, $reaction);
+    }
+
+  }
+
+  return implode(", ", $reaction_description);
+}

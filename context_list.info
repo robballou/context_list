@@ -1,0 +1,5 @@
+name = Context List
+description = List contexts & their info
+package = Other
+core = 7.x
+dependencies[] = context
