@@ -3,3 +3,4 @@ description = List contexts & their info
 package = Other
 core = 7.x
 dependencies[] = context
+dependencies[] = context_ui
