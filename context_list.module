@@ -7,7 +7,7 @@ function context_list_menu() {
 	$items = array();
   $items['admin/structure/context/contexts_list'] = array(
     'title' => 'List of contexts',
-    'type' => MENU_LOCAL_ACTION,
+    'type' => MENU_LOCAL_TASK,
     'page callback' => 'context_list_contexts',
     'access arguments' => array('access administration pages'),
     'weight' => 10
@@ -22,7 +22,7 @@ function context_list_contexts() {
   $page = array();
 
   $page['intro'] = array(
-    '#markup' => '<p>Below is a list of each context and their related settings.</p>',
+    '#markup' => '<p>' . t('Below is a list of each context and their related settings') . '</p>',
   );
 
   $rows = array();
