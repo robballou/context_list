@@ -1,5 +1,10 @@
 <?php
 /**
+ * @file
+ * Plugins
+ */
+
+/**
  * Base class for displaying context conditions
  */
 class ContextListConditionDisplay {
@@ -18,19 +23,24 @@ class ContextListConditionDisplay {
 
   /**
    * The constructor for this class
-   * @param string $condition The condition identifier
-   * @param array  $settings  [description]
+   *
+   * @param string $condition
+   *   The condition identifier
+   * @param array $settings
+   *   Array of settings
    */
-  function __construct($condition = NULL, $settings = array()) {
+  public function __construct($condition = NULL, $settings = array()) {
     $this->condition = $condition;
     $this->settings = $settings;
   }
 
   /**
    * Display the condition
+   *
    * @return string
+   *   The condition
    */
-  function display() {
+  public function display() {
     return $this->condition;
   }
 }
@@ -42,8 +52,11 @@ class ContextListConditionDisplay {
  * This class is used by a couple of different conditions.
  */
 class ContextListConditionDisplayValues extends ContextListConditionDisplay {
-  function display() {
-    if (isset($this->settings['values']) && is_array($this->settings['values'])){
+  /**
+   * Display the condition
+   */
+  public function display() {
+    if (isset($this->settings['values']) && is_array($this->settings['values'])) {
       $values = $this->settings['values'];
       $values = array_map('htmlentities', $values);
       return $this->condition . ': ' . implode(', ', $values);
@@ -83,10 +96,13 @@ class ContextListReactionDisplay {
 
   /**
    * The constructor for this reaction display
-   * @param string $reaction The context's reaction
-   * @param array  $settings The context reaction settings
+   *
+   * @param string $reaction
+   *   The context's reaction
+   * @param array $settings
+   *   The context reaction settings
    */
-  function __construct($reaction = NULL, $settings = array()) {
+  public function __construct($reaction = NULL, $settings = array()) {
     $this->reaction = $reaction;
     $this->settings = $settings;
   }
@@ -95,7 +111,7 @@ class ContextListReactionDisplay {
    * Display the context reaction
    * @return string
    */
-  function display() {
+  public function display() {
     $d = $this->reaction . ": ";
     if (is_array($this->settings)) {
       $d .= implode(', ', array_map('htmlentities', $this->settings));
@@ -111,20 +127,24 @@ class ContextListReactionDisplay {
  * The reaction display class for blocks
  */
 class ContextListReactionDisplay_block extends ContextListReactionDisplay {
-  function display() {
+  /**
+   * Display reaction
+   */
+  public function display() {
     $reaction_details = array();
 
     foreach ($this->settings['blocks'] as $block => $details) {
       $block_link = $details['module'] . ': ' .
         l($block, 'admin/structure/block/manage/' . $details['module'] . '/' . $details['delta'] . '/configure');
 
-      switch ($details['module']){
+      switch ($details['module']) {
         case 'menu':
-          $block_link .= ' ('. l('Edit', 'admin/structure/menu/manage/'. $details['delta']) .')';
+          $block_link .= ' (' . l(t('Edit'), 'admin/structure/menu/manage/' . $details['delta']) . ')';
           break;
+
         case 'views':
           $view = str_replace('-', '/', $details['delta']);
-          $block_link .= ' ('. l('Edit', 'admin/structure/views/view/' . $view) .')';
+          $block_link .= ' (' . l(t('Edit'), 'admin/structure/views/view/' . $view) . ')';
           break;
       }
 
