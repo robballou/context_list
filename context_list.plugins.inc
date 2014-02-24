@@ -107,9 +107,10 @@ class ContextListReactionDisplay {
     $this->settings = $settings;
   }
 
- /**
+  /**
    * Display the context reaction
    * @return string
+   *   The reaction representation
    */
   public function display() {
     $d = $this->reaction . ": ";
