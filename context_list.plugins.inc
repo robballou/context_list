@@ -107,19 +107,39 @@ class ContextListReactionDisplay {
     $this->settings = $settings;
   }
 
-  /**
+ /**
    * Display the context reaction
    * @return string
    */
   public function display() {
     $d = $this->reaction . ": ";
     if (is_array($this->settings)) {
-      $d .= implode(', ', array_map('htmlentities', $this->settings));
+      $d .= $this->implodeSettings($this->settings);
     }
     else {
       $d .= htmlentities($this->settings);
     }
     return $d;
+  }
+
+  /**
+   * Recursively implodes a context reaction settings array.
+   * @param array $settings
+   *   An array of context reactions.
+   * @return string
+   *   A human readable string.
+   */
+  function implodeSettings($settings) {
+    $string = '';
+    foreach ($settings as $key => $setting) {
+      if (is_array($setting)) {
+        $string .= $key . ': [' . $this->implodeSettings($setting) . ']';
+      }
+      else {
+        return implode(', ', array_map('htmlentities', array_filter($settings)));
+      }
+    }
+    return $string;
   }
 }
 
