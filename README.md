@@ -22,6 +22,7 @@ The module has a few hooks in place that allow developers to create new display 
 
 * **all**: `ContextListReactionDisplay`
 * **block**: `ContextListReactionDisplay_block`
+* **region**: `ContextListReactionDisplay_region`
 
 ### Creating New Plugins
 

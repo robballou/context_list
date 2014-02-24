@@ -163,6 +163,50 @@ class ContextListReactionDisplay_block extends ContextListReactionDisplay {
 }
 
 /**
+ * The reaction display class for regions
+ */
+class ContextListReactionDisplay_region extends ContextListReactionDisplay {
+  /**
+   * Display the context reaction
+   */
+  public function display() {
+    $d = $this->reaction . ": ";
+    if (is_array($this->settings)) {
+      $d .= '<ul>';
+      foreach ($this->settings as $theme => $regions) {
+        $d .= '<li><strong>' . check_plain($theme) . '</strong>';
+
+        // build a list of disabled regions
+        if (isset($regions['disable'])) {
+          $disabled_regions = array();
+          foreach ($regions['disable'] as $region => $disabled) {
+            if ($disabled) {
+              array_push($disabled_regions, $region);
+            }
+          }
+        }
+
+        // display any disabled regions
+        if (count($disabled_regions) > 0) {
+          $d .= '<ul>';
+          foreach ($disabled_regions as $disabled_region) {
+            $d .= '<li>' . t('disabled:') . ' ' . check_plain($disabled_region) . '</li>';
+          }
+          $d .= '</ul>';
+        }
+
+        $d .= '</li>';
+      }
+      $d .= '</ul>';
+    }
+    else {
+      return parent::display();
+    }
+    return $d;
+  }
+}
+
+/**
  * Implements hook_context_list_register_condition_display().
  */
 function context_list_context_list_register_condition_display() {
@@ -180,5 +224,6 @@ function context_list_context_list_register_reaction_display() {
   return array(
     'all' => 'ContextListReactionDisplay',
     'block' => 'ContextListReactionDisplay_block',
+    'region' => 'ContextListReactionDisplay_region',
   );
 }
