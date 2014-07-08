@@ -28,3 +28,21 @@ function hook_context_list_register_reaction_display() {
     'block' => 'ContextListReactionDisplay_block',
   );
 }
+
+/**
+ * Alter a block name
+ */
+function hook_context_list_reaction_block_name(&$block_name, &$details) {
+}
+
+/**
+ * Alter the list of blocks available to the context display plugin
+ */
+function hook_context_list_reaction_blocks(&$blocks) {
+}
+
+/**
+ * Alter a theme name
+ */
+function hook_context_list_reaction_theme_name(&$theme_name, &$regions) {
+}

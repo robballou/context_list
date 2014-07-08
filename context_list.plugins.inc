@@ -154,10 +154,18 @@ class ContextListReactionDisplay_block extends ContextListReactionDisplay {
   public function display() {
     $reaction_details = array();
 
+    // check if anything wants to modify the list of blocks
+    drupal_alter('context_list_reaction_blocks', $this->settings['blocks']);
+
     foreach ($this->settings['blocks'] as $block => $details) {
+
+      // see if anythings wants to modify the block name
+      drupal_alter('context_list_reaction_block_name', $block, $details);
+
       $block_link = $details['module'] . ': ' .
         l($block, 'admin/structure/block/manage/' . $details['module'] . '/' . $details['delta'] . '/configure');
 
+      // if we know the link structure for this block, link to the edit screen
       switch ($details['module']) {
         case 'menu':
           $block_link .= ' (' . l(t('Edit'), 'admin/structure/menu/manage/' . $details['delta']) . ')';
@@ -195,6 +203,7 @@ class ContextListReactionDisplay_region extends ContextListReactionDisplay {
     if (is_array($this->settings)) {
       $d .= '<ul>';
       foreach ($this->settings as $theme => $regions) {
+        drupal_alter('context_list_reaction_theme_name', $theme, $regions);
         $d .= '<li><strong>' . check_plain($theme) . '</strong>';
 
         // build a list of disabled regions
